@@ -20,24 +20,15 @@ func (repository *UserRepositoryImpl) Create(
 	db *sql.DB,
 	entity entities.User,
 ) (entities.User, error) {
-	query := `insert into users (username, email, password, is_email_confirmed, created_at) values ($1, $2, $3, $4, $5) returning id; `
-	// result, err := db.ExecContext(
-	// 	ctx,
-	// 	query,
-	// 	entity.Username,
-	// 	entity.Email,
-	// 	entity.Password,
-	// 	entity.IsEmailConfirmed,
-	// 	time.Now(),
-	// )
-	// if err != nil {
-	// 	return entities.User{}, err
-	// }
-	//
-	// insertedId, err := result.LastInsertId()
-	// if err != nil {
-	// 	return entities.User{}, err
-	// }
+	query := `
+    insert 
+    into users (
+      username, email, password, is_email_confirmed, created_at
+    ) 
+    values (
+      $1, $2, $3, $4, $5
+    ) returning id; 
+  `
 	var insertedId uint32
 	err := db.QueryRowContext(
 		ctx,
@@ -50,10 +41,6 @@ func (repository *UserRepositoryImpl) Create(
 	).Scan(&insertedId)
 	if err != nil {
 		return entities.User{}, err
-	}
-
-	if insertedId == 0 {
-		return entities.User{}, errors.New("unknow error")
 	}
 
 	entity.ID = uint32(insertedId)
@@ -70,14 +57,15 @@ func (repository *UserRepositoryImpl) FindByCredentials(
       id,
       username,
       email,
-      is_email_confirmed
+      is_email_confirmed,
+      password
     from users
-    where username = ? or email = ?
+    where username = $1 or email = $2
     limit 1
   `
 	user := entities.User{}
-	row := db.QueryRowContext(ctx, query, entity.Username, entity.Email, entity.Password)
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.IsEmailConfirmed)
+	row := db.QueryRowContext(ctx, query, entity.Username, entity.Email)
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.IsEmailConfirmed, &user.Password)
 	return user, err
 }
 

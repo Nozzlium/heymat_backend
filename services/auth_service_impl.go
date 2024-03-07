@@ -34,7 +34,7 @@ func (service *AuthServiceImpl) Login(
 		return response.LoginResponse{}, err
 	}
 
-	err = helper.CompareHashWithPassword(param.User.Password, user.Password)
+	err = helper.CompareHashWithPassword(user.Password, param.User.Password)
 	if err != nil {
 		return response.LoginResponse{}, err
 	}
