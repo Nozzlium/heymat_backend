@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/nozzlium/heymat_backend/custom_errors"
 	"github.com/nozzlium/heymat_backend/helper"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/repositories"
@@ -37,5 +38,5 @@ func (service *UserServiceImpl) Register(
 
 	user.Password = passwordHash
 	result, err := service.UserRepository.Create(ctx, service.DB, user)
-	return helper.UserEntityToResponseMapper(result), err
+	return helper.UserEntityToResponseMapper(result), custom_errors.ParseRegisterError(err)
 }
