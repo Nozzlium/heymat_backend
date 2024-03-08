@@ -6,5 +6,5 @@ import (
 )
 
 func authRouting(app *fiber.App, authController controllers.AuthController) {
-	app.Post("/login", authController.Login)
+	app.Post("/api/login", authController.Login)
 }
