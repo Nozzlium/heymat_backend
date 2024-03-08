@@ -11,6 +11,11 @@ const (
 	USERNAME_ALREADY_EXISTS = "username sudah terdaftar"
 )
 
+var messages = map[string]string{
+	"email":    EMAIL_ALREADY_EXISTS,
+	"username": USERNAME_ALREADY_EXISTS,
+}
+
 func ParseRegisterError(err error) error {
 	if driverErr, ok := err.(*pq.Error); ok {
 		switch driverErr.Code.Name() {
@@ -23,19 +28,9 @@ func ParseRegisterError(err error) error {
 
 func getUniqueViolationError(driverErr *pq.Error) error {
 	constraint := strings.Split(driverErr.Constraint, "_")
-	switch constraint[1] {
-	case "email":
-		return &HttpError{
-			Code:    BAD_REQUEST_CODE,
-			Status:  BAD_REQUEST_STATUS,
-			Message: EMAIL_ALREADY_EXISTS,
-		}
-	case "username":
-		return &HttpError{
-			Code:    BAD_REQUEST_CODE,
-			Status:  BAD_REQUEST_STATUS,
-			Message: USERNAME_ALREADY_EXISTS,
-		}
+	return &HttpError{
+		Code:    BAD_REQUEST_CODE,
+		Status:  BAD_REQUEST_STATUS,
+		Message: messages[constraint[1]],
 	}
-	return driverErr
 }

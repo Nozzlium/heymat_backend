@@ -18,7 +18,7 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 		"code":   fiber.StatusInternalServerError,
 		"status": "internal server error",
 		"error": fiber.Map{
-			"message": "internal server error",
+			"message": err.Error(),
 		},
 	}, "application/json")
 }
