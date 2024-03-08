@@ -3,6 +3,7 @@ package custom_errors
 import (
 	"strings"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/lib/pq"
 )
 
@@ -29,8 +30,8 @@ func ParseRegisterError(err error) error {
 func getUniqueViolationError(driverErr *pq.Error) error {
 	constraint := strings.Split(driverErr.Constraint, "_")
 	return &HttpError{
-		Code:    BAD_REQUEST_CODE,
-		Status:  BAD_REQUEST_STATUS,
-		Message: messages[constraint[1]],
+		Code:    fiber.ErrBadRequest.Code,
+		Message: fiber.ErrBadRequest.Message,
+		Detail:  messages[constraint[1]],
 	}
 }

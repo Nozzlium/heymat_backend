@@ -3,6 +3,7 @@ package custom_errors
 import (
 	"database/sql"
 
+	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,9 +18,9 @@ func ParseLoginError(err error) error {
 	for _, correspErr := range errs {
 		if err == correspErr {
 			return &HttpError{
-				Code:    BAD_REQUEST_CODE,
-				Status:  BAD_REQUEST_STATUS,
-				Message: INVALID_CREDENTIALS,
+				Code:    fiber.ErrBadRequest.Code,
+				Message: fiber.ErrBadRequest.Message,
+				Detail:  INVALID_CREDENTIALS,
 			}
 		}
 	}

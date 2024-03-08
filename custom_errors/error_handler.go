@@ -4,21 +4,40 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const ERROR = "error"
+
 func ErrorHandler(ctx *fiber.Ctx, err error) error {
 	if httpError, ok := err.(*HttpError); ok {
+		ctx.Status(httpError.Code)
 		return ctx.JSON(fiber.Map{
 			"code":   httpError.Code,
-			"status": httpError.Status,
+			"status": ERROR,
 			"error": fiber.Map{
 				"message": httpError.Message,
+				"detail":  httpError.Detail,
 			},
 		}, "application/json")
 	}
+
+	if err == fiber.ErrMethodNotAllowed {
+		ctx.Status(fiber.ErrMethodNotAllowed.Code)
+		return ctx.JSON(fiber.Map{
+			"code":   fiber.ErrMethodNotAllowed.Code,
+			"status": ERROR,
+			"error": fiber.Map{
+				"message": fiber.ErrMethodNotAllowed.Message,
+				"detail":  err.Error(),
+			},
+		}, "application/json")
+	}
+
+	ctx.Status(fiber.ErrInternalServerError.Code)
 	return ctx.JSON(fiber.Map{
-		"code":   fiber.StatusInternalServerError,
-		"status": "internal server error",
+		"code":   fiber.ErrInternalServerError.Code,
+		"status": ERROR,
 		"error": fiber.Map{
-			"message": err.Error(),
+			"message": fiber.ErrInternalServerError.Message,
+			"detail":  err.Error(),
 		},
 	}, "application/json")
 }
