@@ -6,5 +6,5 @@ import (
 )
 
 func userRouting(app *fiber.App, userController controllers.UserController) {
-	app.Post("/register", userController.Register)
+	app.Post("/api/register", userController.Register)
 }

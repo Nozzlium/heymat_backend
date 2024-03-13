@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/nozzlium/heymat_backend/custom_errors"
 	"github.com/nozzlium/heymat_backend/helper"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/repositories"
@@ -31,12 +32,12 @@ func (service *AuthServiceImpl) Login(
 ) (response.LoginResponse, error) {
 	user, err := service.UserRepository.FindByCredentials(ctx, service.DB, param.User)
 	if err != nil {
-		return response.LoginResponse{}, err
+		return response.LoginResponse{}, custom_errors.ParseLoginError(err)
 	}
 
 	err = helper.CompareHashWithPassword(user.Password, param.User.Password)
 	if err != nil {
-		return response.LoginResponse{}, err
+		return response.LoginResponse{}, custom_errors.ParseLoginError(err)
 	}
 
 	token, err := helper.GenerateJwtToken(user)

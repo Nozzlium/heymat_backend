@@ -64,8 +64,8 @@ func (repository *UserRepositoryImpl) FindByCredentials(
     limit 1
   `
 	user := entities.User{}
-	row := db.QueryRowContext(ctx, query, entity.Username, entity.Email)
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.IsEmailConfirmed, &user.Password)
+	err := db.QueryRowContext(ctx, query, entity.Username, entity.Email).
+		Scan(&user.ID, &user.Username, &user.Email, &user.IsEmailConfirmed, &user.Password)
 	return user, err
 }
 
