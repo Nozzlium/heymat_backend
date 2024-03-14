@@ -8,8 +8,6 @@ type ReportEntry struct {
 	Amount    int64
 	Notes     string
 	UserID    uint32
-	Year      uint16
-	Month     uint8
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time

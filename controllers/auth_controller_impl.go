@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/nozzlium/heymat_backend/data/entities"
+	"github.com/nozzlium/heymat_backend/entities"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/requestbodies"
 	"github.com/nozzlium/heymat_backend/services"

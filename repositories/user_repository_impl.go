@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/nozzlium/heymat_backend/data/entities"
+	"github.com/nozzlium/heymat_backend/entities"
 )
 
 type UserRepositoryImpl struct{}

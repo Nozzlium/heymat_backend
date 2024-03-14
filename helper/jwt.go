@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/nozzlium/heymat_backend/data/entities"
+	"github.com/nozzlium/heymat_backend/entities"
 )
 
 var tempSignKey = "temp"

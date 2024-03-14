@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/nozzlium/heymat_backend/data/entities"
+	"github.com/nozzlium/heymat_backend/entities"
 )
 
 type UserRepository interface {
