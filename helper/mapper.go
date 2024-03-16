@@ -15,10 +15,11 @@ func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
 }
 
 func ReportEntryEntityToResponseMapper(entity entities.ReportEntry) response.ReportEntryResponse {
-	// TODO implement date Indonesia
 	return response.ReportEntryResponse{
-		Title:     entity.Title,
-		Notes:     entity.Notes,
-		CreatedAt: entity.CreatedAt,
+		Title:           entity.Title,
+		Notes:           entity.Notes,
+		CreatedAt:       entity.CreatedAt,
+		CreatedAtString: GetIdDateString(entity.CreatedAt),
+		UpdatedAt:       entity.UpdatedAt,
 	}
 }

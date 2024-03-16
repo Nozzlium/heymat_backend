@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
+	"github.com/nozzlium/heymat_backend/helper"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/repositories"
 	"github.com/nozzlium/heymat_backend/response"
@@ -21,10 +22,7 @@ func (service *ReportServiceImpl) Create(
 	entity entities.ReportEntry,
 ) (response.ReportEntryResponse, error) {
 	res, err := service.ReportEntryRepository.Create(ctx, service.DB, entity)
-	if err != nil {
-		return response.ReportEntryResponse{}, err
-	}
-	// TODO wait for date Indonesia
+	return helper.ReportEntryEntityToResponseMapper(res), err
 }
 
 func (service *ReportServiceImpl) GetByYear(
