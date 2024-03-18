@@ -39,14 +39,16 @@ func (repository *RecordEntryRepositoryImpl) GetYearly(
 	ctx context.Context,
 	DB *sql.DB,
 	time time.Time,
-) (map[uint]results.YearlyReport, error) {
+) (map[uint]results.MonthlyBalance, error) {
 	query := `
     select 
-      date_trunc('month', created_at) as date,
-      sum(value) as value
-    from report_entries
-    where date_part('year', created_at) = date_part('year', $1)
-    group by date order by date;
+      report_entries.time_code as date,
+      budget.amount,
+      sum(report_entries.amount) as balance 
+    from budget 
+      left join report_entries on report_entries.time_code = budget.time_code
+    where date = date_trunc('month', $1)
+    group by date order by date asc;
   `
 	rows, err := DB.QueryContext(ctx, query, time)
 	if err != nil {
@@ -54,10 +56,10 @@ func (repository *RecordEntryRepositoryImpl) GetYearly(
 	}
 	defer rows.Close()
 
-	res := make(map[uint]results.YearlyReport)
+	res := make(map[uint]results.MonthlyBalance)
 	for rows.Next() {
-		mth := results.YearlyReport{}
-		err = rows.Scan(&mth.Date, &mth.Value)
+		mth := results.MonthlyBalance{}
+		err = rows.Scan(&mth.Date, &mth.Budget, &mth.Expense)
 		if err != nil {
 			return nil, err
 		}
@@ -72,16 +74,19 @@ func (repository *RecordEntryRepositoryImpl) GetTotalOfMonth(
 	ctx context.Context,
 	DB *sql.DB,
 	time time.Time,
-) (results.YearlyReport, error) {
+) (results.MonthlyBalance, error) {
 	query := `
     select 
-      date_trunc('month', created_at) as date,
-      sum(value) as value
-    from record_entries
-    where date = date_part('month', $1)  
+      report_entries.time_code as date,
+      budget.amount,
+      sum(report_entries.amount) as balance 
+    from budget 
+      left join report_entries on report_entries.time_code = budget.time_code
+    where date = date_trunc('month', $1)
+      group by record_entries.time_code limit 1;
   `
-	res := results.YearlyReport{}
-	err := DB.QueryRowContext(ctx, query, time).Scan(&res.Date, &res.Value)
+	res := results.MonthlyBalance{}
+	err := DB.QueryRowContext(ctx, query, time).Scan(&res.Date, &res.Expense)
 	return res, err
 }
 

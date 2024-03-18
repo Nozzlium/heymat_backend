@@ -8,6 +8,6 @@ import (
 )
 
 func TestMake(t *testing.T) {
-	wow := make([]response.Yearly, 12, 12)
+	wow := make([]response.MonthlyBalance, 12, 12)
 	fmt.Println(wow)
 }

@@ -30,12 +30,16 @@ var idDayNames = map[time.Weekday]string{
 	time.Sunday:    "Minggu",
 }
 
-func GetIdDateString(tme time.Time) string {
+func GetIdDateStringFull(tme time.Time) string {
 	return fmt.Sprintf(
 		"%s, %d %s %d",
 		idDayNames[tme.Weekday()],
-		tme.Day,
+		tme.Day(),
 		idMonthNames[tme.Month()],
 		tme.Year(),
 	)
+}
+
+func GetIdDateStringMonth(tme time.Time) string {
+	return fmt.Sprintf("%s %d", idMonthNames[tme.Month()], tme.Year())
 }

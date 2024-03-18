@@ -20,8 +20,8 @@ type RecordEntryRepository interface {
 		ctx context.Context,
 		DB *sql.DB,
 		time time.Time,
-	) (map[uint]results.YearlyReport, error)
-	GetTotalOfMonth(ctx context.Context, DB *sql.DB, time time.Time) (results.YearlyReport, error)
+	) (map[uint]results.MonthlyBalance, error)
+	GetTotalOfMonth(ctx context.Context, DB *sql.DB, time time.Time) (results.MonthlyBalance, error)
 	GetByMonth(
 		ctx context.Context,
 		DB *sql.DB,

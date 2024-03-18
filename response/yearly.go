@@ -1,7 +1,14 @@
 package response
 
-type Yearly struct {
-	MonthInt uint8  `json:"monthInt"`
-	Month    string `json:"month"`
-	Sum      uint64 `json:"sum"`
+import "time"
+
+type MonthlyBalance struct {
+	Date          time.Time `json:"date"`
+	DateString    string    `json:"dateString"`
+	Balance       uint64    `json:"balance"`
+	BalanceString string    `json:"balanceString"`
+	Budget        uint64    `json:"budget"`
+	BudgetString  string    `json:"budgetString"`
+	Expense       uint64    `json:"expense"`
+	ExpenseString string    `json:"expenseString"`
 }

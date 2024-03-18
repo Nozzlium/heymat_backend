@@ -2,7 +2,7 @@ package response
 
 import "time"
 
-type ReportEntryResponse struct {
+type ReportEntry struct {
 	Title           string    `json:"title"`
 	Notes           string    `json:"notes"`
 	CreatedAt       time.Time `json:"createdAt"`

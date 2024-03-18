@@ -2,7 +2,8 @@ package results
 
 import "time"
 
-type YearlyReport struct {
-	Date  time.Time
-	Value int64
+type MonthlyBalance struct {
+	Date    time.Time
+	Budget  uint64
+	Expense uint64
 }

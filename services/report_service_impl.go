@@ -20,7 +20,7 @@ type ReportServiceImpl struct {
 func (service *ReportServiceImpl) Create(
 	ctx context.Context,
 	entity entities.ReportEntry,
-) (response.ReportEntryResponse, error) {
+) (response.ReportEntry, error) {
 	res, err := service.ReportEntryRepository.Create(ctx, service.DB, entity)
 	return helper.ReportEntryEntityToResponseMapper(res), err
 }
@@ -28,7 +28,7 @@ func (service *ReportServiceImpl) Create(
 func (service *ReportServiceImpl) GetByYear(
 	ctx context.Context,
 	param params.ReportEntry,
-) ([]response.Yearly, error) {
+) ([]response.MonthlyBalance, error) {
 	reports, err := service.ReportEntryRepository.GetYearly(
 		ctx,
 		service.DB,
@@ -38,15 +38,22 @@ func (service *ReportServiceImpl) GetByYear(
 		return nil, err
 	}
 
-	res := make([]response.Yearly, 12, 12)
+	year := param.RecordEntry.CreatedAt.Year()
+	res := make([]response.MonthlyBalance, 12, 12)
 	for i, temp := range res {
 		monthInt := uint(i + 1)
 		reprt, ok := reports[monthInt]
 		if ok {
-			temp.Sum = uint64(reprt.Value)
+			temp.Budget = reprt.Budget
+			temp.BudgetString = helper.IntToCurrency(temp.Budget)
+			temp.Expense = reprt.Expense
+			temp.ExpenseString = helper.IntToCurrency(temp.Expense)
+			temp.Balance = temp.Budget - temp.Expense
+			temp.BalanceString = helper.IntToCurrency(temp.Balance)
 		}
-		temp.MonthInt = uint8(monthInt)
-		temp.Month = time.Month(monthInt).String()
+		date := time.Date(year, time.Month(i), 1, 0, 0, 0, 0, time.UTC)
+		temp.Date = date
+		temp.DateString = helper.GetIdDateStringMonth(temp.Date)
 	}
 	return res, nil
 }

@@ -14,12 +14,19 @@ func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
 	}
 }
 
-func ReportEntryEntityToResponseMapper(entity entities.ReportEntry) response.ReportEntryResponse {
-	return response.ReportEntryResponse{
+func ReportEntryEntityToResponseMapper(entity entities.ReportEntry) response.ReportEntry {
+	return response.ReportEntry{
 		Title:           entity.Title,
 		Notes:           entity.Notes,
 		CreatedAt:       entity.CreatedAt,
-		CreatedAtString: GetIdDateString(entity.CreatedAt),
+		CreatedAtString: GetIdDateStringFull(entity.CreatedAt),
 		UpdatedAt:       entity.UpdatedAt,
+	}
+}
+
+func BudgetEntityToBudgetRepsonseMapper(entity entities.Budget) response.BudgetRepsonse {
+	return response.BudgetRepsonse{
+		Amount: entity.Amount,
+		Date:   entity.CreatedAt,
 	}
 }
