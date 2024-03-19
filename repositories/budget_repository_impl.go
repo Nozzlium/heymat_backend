@@ -9,6 +9,10 @@ import (
 
 type BudgetRepositoryImpl struct{}
 
+func NewBudgetRepository() *BudgetRepositoryImpl {
+	return &BudgetRepositoryImpl{}
+}
+
 func (repository *BudgetRepositoryImpl) Create(
 	ctx context.Context,
 	DB *sql.DB,

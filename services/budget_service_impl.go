@@ -15,9 +15,18 @@ type BudgetServiceImpl struct {
 	DB               *sql.DB
 }
 
+func NewBudgetService(
+	budgetRepsitory repositories.BudgetRepository,
+	DB *sql.DB,
+) *BudgetServiceImpl {
+	return &BudgetServiceImpl{
+		BudgetReporitory: budgetRepsitory,
+		DB:               DB,
+	}
+}
+
 func (service *BudgetServiceImpl) Create(
 	ctx context.Context,
-	Db *sql.DB,
 	entity entities.Budget,
 ) (response.BudgetRepsonse, error) {
 	res, err := service.BudgetReporitory.Create(ctx, service.DB, entity)

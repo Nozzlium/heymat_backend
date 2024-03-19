@@ -10,4 +10,5 @@ type ReportControllerImpl struct {
 }
 
 func (controller *ReportControllerImpl) Create(ctx *fiber.Ctx) error {
+	return nil
 }
