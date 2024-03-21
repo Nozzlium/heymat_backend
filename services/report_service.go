@@ -10,5 +10,5 @@ import (
 
 type ReportService interface {
 	Create(ctx context.Context, entity entities.ReportEntry) (response.ReportEntry, error)
-	GetByYear(ctx context.Context, param params.ReportEntry) ([]response.MonthlyBalance, error)
+	GetByYear(ctx context.Context, param params.ReportEntry) (response.MonthlyBalances, error)
 }

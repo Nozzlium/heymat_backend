@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -24,8 +23,6 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 		ctx.Context().SetUserValue("userData", claims)
 		return ctx.Next()
 	} else {
-		fmt.Println(claims)
-		fmt.Println("2B", "9S")
 		return errors.New("unknown claims")
 	}
 }

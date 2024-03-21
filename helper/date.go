@@ -43,3 +43,7 @@ func GetIdDateStringFull(tme time.Time) string {
 func GetIdDateStringMonth(tme time.Time) string {
 	return fmt.Sprintf("%s %d", idMonthNames[tme.Month()], tme.Year())
 }
+
+func TruncateToMonth(tme time.Time) time.Time {
+	return time.Date(tme.Year(), tme.Month(), 1, 0, 0, 0, 0, tme.Location())
+}

@@ -26,7 +26,8 @@ func ReportEntryEntityToResponseMapper(entity entities.ReportEntry) response.Rep
 
 func BudgetEntityToBudgetRepsonseMapper(entity entities.Budget) response.BudgetRepsonse {
 	return response.BudgetRepsonse{
-		Amount: entity.Amount,
-		Date:   entity.CreatedAt,
+		Amount:     entity.Amount,
+		Date:       entity.CreatedAt,
+		DateString: GetIdDateStringMonth(entity.CreatedAt),
 	}
 }

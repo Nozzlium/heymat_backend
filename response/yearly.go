@@ -12,3 +12,7 @@ type MonthlyBalance struct {
 	Expense       uint64    `json:"expense"`
 	ExpenseString string    `json:"expenseString"`
 }
+
+type MonthlyBalances struct {
+	MonthlyBalances []MonthlyBalance `json:"monthlyBalances"`
+}

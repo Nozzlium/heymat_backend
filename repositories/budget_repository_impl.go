@@ -26,11 +26,11 @@ func (repository *BudgetRepositoryImpl) Create(
       created_at,
       updated_at
     ) values (
-      $1, $2, date_trunc('month', $3), $3, $3
+      $1, $2, $3, $4, $4
     ) returning id;
   `
 	var insertedId uint32
-	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.CreatedAt).
+	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.TimeCode, entity.CreatedAt).
 		Scan(&insertedId)
 	if err != nil {
 		return entities.Budget{}, err

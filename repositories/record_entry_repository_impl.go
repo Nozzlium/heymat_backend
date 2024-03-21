@@ -3,14 +3,20 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
+	"github.com/nozzlium/heymat_backend/helper"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/results"
 )
 
 type RecordEntryRepositoryImpl struct{}
+
+func NewRecordEntryRepository() *RecordEntryRepositoryImpl {
+	return &RecordEntryRepositoryImpl{}
+}
 
 func (repository *RecordEntryRepositoryImpl) Create(
 	ctx context.Context,
@@ -19,13 +25,13 @@ func (repository *RecordEntryRepositoryImpl) Create(
 ) (entities.ReportEntry, error) {
 	query := `
     insert into report_entries
-    (user_id, title, amount, created_at, updated_at)
-    values ($1, $2, $3, $4, $5)
+    (user_id, title, amount, time_code, created_at, updated_at)
+    values ($1, $2, $3, $4, $5, $6)
     returning id;
   `
 	now := time.Now()
 	var insertedId uint32
-	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Title, entity.Amount, now, now).
+	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Title, entity.Amount, helper.TruncateToMonth(now), now, now).
 		Scan(&insertedId)
 	if err != nil {
 		return entity, err
@@ -38,19 +44,21 @@ func (repository *RecordEntryRepositoryImpl) Create(
 func (repository *RecordEntryRepositoryImpl) GetYearly(
 	ctx context.Context,
 	DB *sql.DB,
-	time time.Time,
+	param params.Balance,
 ) (map[uint]results.MonthlyBalance, error) {
+	fmt.Println(param)
 	query := `
     select 
-      report_entries.time_code as date,
+      budget.time_code as date,
       budget.amount,
       sum(report_entries.amount) as balance 
     from budget 
-      left join report_entries on report_entries.time_code = budget.time_code
-    where date = date_trunc('month', $1)
-    group by date order by date asc;
+      left join report_entries on budget.id = report_entries.budget_id
+    where date_part('year', budget.time_code) = $1 
+      and budget.user_id = $2
+    group by budget.id order by date asc;
   `
-	rows, err := DB.QueryContext(ctx, query, time)
+	rows, err := DB.QueryContext(ctx, query, param.Date.Year(), param.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -58,14 +66,24 @@ func (repository *RecordEntryRepositoryImpl) GetYearly(
 
 	res := make(map[uint]results.MonthlyBalance)
 	for rows.Next() {
-		mth := results.MonthlyBalance{}
-		err = rows.Scan(&mth.Date, &mth.Budget, &mth.Expense)
+		balance := results.MonthlyBalance{}
+		var expense sql.NullInt64
+		err = rows.Scan(&balance.Date, &balance.Budget, &expense)
 		if err != nil {
 			return nil, err
 		}
+		if expense.Valid {
+			balance.Expense = uint64(expense.Int64)
+		} else {
+			balance.Expense = 0
+		}
 
-		res[uint(mth.Date.Month())] = mth
+		res[uint(balance.Date.Month())] = balance
 	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	fmt.Println(res)
 
 	return res, nil
 }

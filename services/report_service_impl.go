@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
@@ -17,6 +18,16 @@ type ReportServiceImpl struct {
 	DB                    *sql.DB
 }
 
+func NewReportService(
+	reportEntryRepository repositories.RecordEntryRepository,
+	DB *sql.DB,
+) *ReportServiceImpl {
+	return &ReportServiceImpl{
+		ReportEntryRepository: reportEntryRepository,
+		DB:                    DB,
+	}
+}
+
 func (service *ReportServiceImpl) Create(
 	ctx context.Context,
 	entity entities.ReportEntry,
@@ -28,14 +39,17 @@ func (service *ReportServiceImpl) Create(
 func (service *ReportServiceImpl) GetByYear(
 	ctx context.Context,
 	param params.ReportEntry,
-) ([]response.MonthlyBalance, error) {
+) (response.MonthlyBalances, error) {
 	reports, err := service.ReportEntryRepository.GetYearly(
 		ctx,
 		service.DB,
-		param.RecordEntry.CreatedAt,
+		params.Balance{
+			UserID: uint64(param.RecordEntry.UserID),
+			Date:   param.RecordEntry.CreatedAt,
+		},
 	)
 	if err != nil {
-		return nil, err
+		return response.MonthlyBalances{}, err
 	}
 
 	year := param.RecordEntry.CreatedAt.Year()
@@ -44,6 +58,7 @@ func (service *ReportServiceImpl) GetByYear(
 		monthInt := uint(i + 1)
 		reprt, ok := reports[monthInt]
 		if ok {
+			fmt.Println(reprt)
 			temp.Budget = reprt.Budget
 			temp.BudgetString = helper.IntToCurrency(temp.Budget)
 			temp.Expense = reprt.Expense
@@ -51,9 +66,20 @@ func (service *ReportServiceImpl) GetByYear(
 			temp.Balance = temp.Budget - temp.Expense
 			temp.BalanceString = helper.IntToCurrency(temp.Balance)
 		}
-		date := time.Date(year, time.Month(i), 1, 0, 0, 0, 0, time.UTC)
+		date := time.Date(
+			year,
+			time.Month(monthInt),
+			1,
+			0,
+			0,
+			0,
+			0,
+			time.FixedZone("GMT+7", 7*60*60),
+		)
 		temp.Date = date
 		temp.DateString = helper.GetIdDateStringMonth(temp.Date)
 	}
-	return res, nil
+	return response.MonthlyBalances{
+		MonthlyBalances: res,
+	}, nil
 }

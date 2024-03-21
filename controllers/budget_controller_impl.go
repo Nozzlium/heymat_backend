@@ -35,6 +35,7 @@ func (controller *BudgetControllerImpl) Create(ctx *fiber.Ctx) error {
 	resp, err := controller.BudgetService.Create(ctx.Context(), entities.Budget{
 		UserID:    userData.ID,
 		Amount:    body.Amount,
+		TimeCode:  helper.TruncateToMonth(body.Date),
 		CreatedAt: body.Date,
 	})
 	if err != nil {

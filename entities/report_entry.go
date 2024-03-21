@@ -8,6 +8,7 @@ type ReportEntry struct {
 	Amount    int64
 	Notes     string
 	UserID    uint32
+	TimeCode  time.Time
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
