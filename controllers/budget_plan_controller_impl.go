@@ -29,7 +29,7 @@ func (controller *BudgetPlanControllerImpl) Create(ctx *fiber.Ctx) error {
 		return errors.New("unauthorized")
 	}
 
-	body := requestbodies.Budget{}
+	body := requestbodies.BudgetPlan{}
 	err := ctx.BodyParser(&body)
 	if err != nil {
 		return err

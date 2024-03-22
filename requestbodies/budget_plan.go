@@ -1,6 +1,6 @@
 package requestbodies
 
-type Budget struct {
+type BudgetPlan struct {
 	Title   string `json:"title"`
 	Amount  uint64 `json:"amount"`
 	Private bool   `json:"private"`

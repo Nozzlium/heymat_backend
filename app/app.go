@@ -33,7 +33,7 @@ func InitApp() (*fiber.App, error) {
 
 	authRouting(app, authController)
 	userRouting(app, userController)
-	budgetRouting(app, budgetController)
+	budgetPlanRouting(app, budgetController)
 
 	return app, nil
 }

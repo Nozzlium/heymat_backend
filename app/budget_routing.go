@@ -6,7 +6,7 @@ import (
 	"github.com/nozzlium/heymat_backend/middleware"
 )
 
-func budgetRouting(app *fiber.App, budgetController controllers.BudgetPlanController) {
+func budgetPlanRouting(app *fiber.App, budgetController controllers.BudgetPlanController) {
 	budget := app.Group("/budget")
 	budget.Use(middleware.AuthMiddleware)
 	budget.Post("", budgetController.Create)
