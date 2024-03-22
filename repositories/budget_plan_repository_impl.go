@@ -24,16 +24,16 @@ func (repository *BudgetPlanRepositoryImpl) Create(
 	query := `
     insert into budget(
       user_id,
-      amount,
-      time_code,
+      amount, 
+      private,
       created_at,
       updated_at
     ) values (
       $1, $2, $3, $4, $4
     ) returning id;
   `
-	var insertedId uint32
-	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.TimeCode, entity.CreatedAt).
+	var insertedId uint64
+	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.Private, entity.CreatedAt).
 		Scan(&insertedId)
 	if err != nil {
 		return entities.BudgetPlan{}, err
@@ -53,9 +53,14 @@ func (repository *BudgetPlanRepositoryImpl) Get(
       budget.id,
       budget.time_code as date,
       budget.amount,
-      sum(report_entries.amount) as balance 
+      budget.private,
+      sum(report_entries.amount) as expense,
+      user.id as user_id,
+      user.username as username,
+      user.email as email
     from budget 
       left join report_entries on budget.id = report_entries.budget_id
+      join users on user.id = budget.user_id
     where date_part('year', budget.time_code) = $1 
       and budget.user_id = $2
     limit $3
@@ -79,7 +84,16 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 	for rows.Next() {
 		balance := results.BudgetPlanBalanceResult{}
 		var expense sql.NullInt64
-		err = rows.Scan(&balance.ID, &balance.Date, &balance.Budget, &expense)
+		err = rows.Scan(
+			&balance.ID,
+			&balance.Date,
+			&balance.Amount,
+			&balance.Private,
+			&expense,
+			&balance.UserID,
+			&balance.Username,
+			&balance.Email,
+		)
 		if err != nil {
 			return nil, err
 		}

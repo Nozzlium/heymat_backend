@@ -22,14 +22,14 @@ func (repository *UserRepositoryImpl) Create(
 ) (entities.User, error) {
 	query := `
     insert 
-    into users (
+    into user (
       username, email, password, is_email_confirmed, created_at
     ) 
     values (
       $1, $2, $3, $4, $5
     ) returning id; 
   `
-	var insertedId uint32
+	var insertedId uint64
 	err := db.QueryRowContext(
 		ctx,
 		query,
@@ -43,7 +43,7 @@ func (repository *UserRepositoryImpl) Create(
 		return entities.User{}, err
 	}
 
-	entity.ID = uint32(insertedId)
+	entity.ID = insertedId
 	return entity, nil
 }
 
@@ -59,7 +59,7 @@ func (repository *UserRepositoryImpl) FindByCredentials(
       email,
       is_email_confirmed,
       password
-    from users
+    from user
     where username = $1 or email = $2
     limit 1
   `
@@ -75,7 +75,7 @@ func (repository *UserRepositoryImpl) UpdatePassword(
 ) (entities.User, error) {
 	query := `
     alter
-    table users
+    table user
     (password)
     values (?)
   `
@@ -102,7 +102,7 @@ func (repository *UserRepositoryImpl) ConfirmUser(
 ) (entities.User, error) {
 	query := `
     alter
-    table users
+    table user
     (is_email_confirmed)
     values (true)
   `

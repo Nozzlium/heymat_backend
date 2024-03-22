@@ -10,13 +10,16 @@ import (
 var tempSignKey = "temp"
 
 type AuthClaims struct {
-	ID uint32 `json:"id"`
+	ID       uint32 `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
 func GenerateJwtToken(user entities.User) (string, error) {
 	claims := AuthClaims{
-		ID: user.ID,
+		ID:       user.ID,
+		Username: user.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},

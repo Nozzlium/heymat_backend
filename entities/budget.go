@@ -3,10 +3,10 @@ package entities
 import "time"
 
 type BudgetPlan struct {
-	ID        uint32
-	UserID    uint32
+	ID        uint64
+	UserID    uint64
 	Amount    uint64
-	TimeCode  time.Time
+	Private   bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

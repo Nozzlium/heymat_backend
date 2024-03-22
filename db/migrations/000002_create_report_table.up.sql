@@ -1,4 +1,4 @@
-create table if not exists budget_plans(
+create table if not exists budget_plan(
   id bigserial primary key not null,
   user_id bigint not null,
   amount bigint not null,
@@ -9,7 +9,7 @@ create table if not exists budget_plans(
   constraint fk_user_id foreign key (user_id) references users(id)
 );
 
-create table if not exists expenses(
+create table if not exists expense(
   id bigserial primary key not null,
   user_id bigint not null,
   budget_id bigint not null,

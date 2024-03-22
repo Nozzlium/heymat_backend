@@ -2,17 +2,23 @@ package response
 
 import "time"
 
-type BudgetPlanResponse struct{}
+type BudgetPlanResponse struct {
+	ID      uint64 `json:"id"`
+	Amount  uint64 `json:"amount"`
+	Private bool   `json:"private"`
+}
 
 type BudgetPlanBalanceResponse struct {
-	Date          time.Time `json:"date"`
-	DateString    string    `json:"dateString"`
-	Balance       int64     `json:"balance"`
-	BalanceString string    `json:"balanceString"`
-	Budget        uint64    `json:"budget"`
-	BudgetString  string    `json:"budgetString"`
-	Expense       uint64    `json:"expense"`
-	ExpenseString string    `json:"expenseString"`
+	ID              uint64       `json:"id"`
+	User            UserResponse `json:"user"`
+	CreatedAt       time.Time    `json:"date"`
+	CreatedAtString string       `json:"dateString"`
+	Balance         int64        `json:"balance"`
+	BalanceString   string       `json:"balanceString"`
+	Budget          uint64       `json:"budget"`
+	BudgetString    string       `json:"budgetString"`
+	Expense         uint64       `json:"expense"`
+	ExpenseString   string       `json:"expenseString"`
 }
 
 type BudgetPlanBalanceResponses struct {

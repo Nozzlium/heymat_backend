@@ -29,9 +29,9 @@ func NewBudgetService(
 func (service *BudgetServiceImpl) Create(
 	ctx context.Context,
 	entity entities.BudgetPlan,
-) (response.BudgetPlanBalanceResponse, error) {
+) (response.BudgetPlanResponse, error) {
 	_, err := service.BudgetReporitory.Create(ctx, service.DB, entity)
-	return response.BudgetPlanBalanceResponse{}, err
+	return helper.BudgetEntityToBudgetResponse(entity), err
 }
 
 func (service *BudgetServiceImpl) Get(

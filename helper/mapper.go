@@ -15,25 +15,36 @@ func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
 	}
 }
 
-func BudgetEntityToBudgetResponse(entity entities.BudgetPlan) {
+func BudgetEntityToBudgetResponse(entity entities.BudgetPlan) response.BudgetPlanResponse {
+	return response.BudgetPlanResponse{
+		ID:      entity.ID,
+		Amount:  entity.Amount,
+		Private: entity.Private,
+	}
 }
 
 func BudgetResultToBudgetRepsonseMapper(
 	result results.BudgetPlanBalanceResult,
 ) response.BudgetPlanBalanceResponse {
 	dateString := GetIdDateStringMonth(result.Date)
-	budget := result.Budget
+	budget := result.Amount
 	expense := result.Expense
 	balance := int64(budget - expense)
 	return response.BudgetPlanBalanceResponse{
-		Budget:        budget,
-		BudgetString:  IntToCurrency(int64(budget)),
-		Expense:       expense,
-		ExpenseString: IntToCurrency(int64(expense)),
-		Balance:       balance,
-		BalanceString: IntToCurrency(balance),
-		Date:          result.Date,
-		DateString:    dateString,
+		ID: result.ID,
+		User: response.UserResponse{
+			ID:       result.UserID,
+			Username: result.Username,
+			Email:    result.Email,
+		},
+		Budget:          budget,
+		BudgetString:    IntToCurrency(int64(budget)),
+		Expense:         expense,
+		ExpenseString:   IntToCurrency(int64(expense)),
+		Balance:         balance,
+		BalanceString:   IntToCurrency(balance),
+		CreatedAt:       result.Date,
+		CreatedAtString: dateString,
 	}
 }
 
