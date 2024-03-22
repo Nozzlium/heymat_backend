@@ -18,11 +18,11 @@ func NewUserRepository() *UserRepositoryImpl {
 func (repository *UserRepositoryImpl) Create(
 	ctx context.Context,
 	db *sql.DB,
-	entity entities.User,
-) (entities.User, error) {
+	entity entities.UserAccount,
+) (entities.UserAccount, error) {
 	query := `
     insert 
-    into user (
+    into user_account (
       username, email, password, is_email_confirmed, created_at
     ) 
     values (
@@ -40,7 +40,7 @@ func (repository *UserRepositoryImpl) Create(
 		time.Now(),
 	).Scan(&insertedId)
 	if err != nil {
-		return entities.User{}, err
+		return entities.UserAccount{}, err
 	}
 
 	entity.ID = insertedId
@@ -50,8 +50,8 @@ func (repository *UserRepositoryImpl) Create(
 func (repository *UserRepositoryImpl) FindByCredentials(
 	ctx context.Context,
 	db *sql.DB,
-	entity entities.User,
-) (entities.User, error) {
+	entity entities.UserAccount,
+) (entities.UserAccount, error) {
 	query := `
     select
       id,
@@ -59,11 +59,11 @@ func (repository *UserRepositoryImpl) FindByCredentials(
       email,
       is_email_confirmed,
       password
-    from user
+    from user_account 
     where username = $1 or email = $2
     limit 1
   `
-	user := entities.User{}
+	user := entities.UserAccount{}
 	err := db.QueryRowContext(ctx, query, entity.Username, entity.Email).
 		Scan(&user.ID, &user.Username, &user.Email, &user.IsEmailConfirmed, &user.Password)
 	return user, err
@@ -71,26 +71,26 @@ func (repository *UserRepositoryImpl) FindByCredentials(
 
 func (repository *UserRepositoryImpl) UpdatePassword(
 	tx *sql.Tx,
-	entity entities.User,
-) (entities.User, error) {
+	entity entities.UserAccount,
+) (entities.UserAccount, error) {
 	query := `
     alter
-    table user
+    table user_account
     (password)
     values (?)
   `
 	result, err := tx.Exec(query, entity.Password)
 	if err != nil {
-		return entities.User{}, err
+		return entities.UserAccount{}, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return entities.User{}, err
+		return entities.UserAccount{}, err
 	}
 
 	if rowsAffected < 1 {
-		return entities.User{}, errors.New("unknown error")
+		return entities.UserAccount{}, errors.New("unknown error")
 	}
 
 	return entity, nil
@@ -98,22 +98,22 @@ func (repository *UserRepositoryImpl) UpdatePassword(
 
 func (repository *UserRepositoryImpl) ConfirmUser(
 	tx *sql.Tx,
-	entity entities.User,
-) (entities.User, error) {
+	entity entities.UserAccount,
+) (entities.UserAccount, error) {
 	query := `
     alter
-    table user
+    table user_account
     (is_email_confirmed)
     values (true)
   `
 	result, err := tx.Exec(query)
 	if err != nil {
-		return entities.User{}, err
+		return entities.UserAccount{}, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return entities.User{}, err
+		return entities.UserAccount{}, err
 	}
 
 	if rowsAffected < 1 {

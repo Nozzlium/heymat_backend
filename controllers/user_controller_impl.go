@@ -30,7 +30,7 @@ func (controller *UserControllerImpl) Register(ctx *fiber.Ctx) error {
 	resp, err := controller.UserService.Register(
 		ctx.Context(),
 		params.User{
-			User: entities.User{
+			User: entities.UserAccount{
 				Username: body.Username,
 				Email:    body.Email,
 				Password: body.Password,

@@ -6,7 +6,7 @@ import (
 	"github.com/nozzlium/heymat_backend/results"
 )
 
-func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
+func UserEntityToResponseMapper(entity entities.UserAccount) response.UserResponse {
 	return response.UserResponse{
 		ID:               entity.ID,
 		Username:         entity.Username,
@@ -26,12 +26,13 @@ func BudgetEntityToBudgetResponse(entity entities.BudgetPlan) response.BudgetPla
 func BudgetResultToBudgetRepsonseMapper(
 	result results.BudgetPlanBalanceResult,
 ) response.BudgetPlanBalanceResponse {
-	dateString := GetIdDateStringMonth(result.Date)
+	dateString := GetIdTimeStringFull(result.Date)
 	budget := result.Amount
 	expense := result.Expense
 	balance := int64(budget - expense)
 	return response.BudgetPlanBalanceResponse{
-		ID: result.ID,
+		ID:    result.ID,
+		Title: result.Title,
 		User: response.UserResponse{
 			ID:       result.UserID,
 			Username: result.Username,

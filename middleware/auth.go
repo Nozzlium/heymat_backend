@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/nozzlium/heymat_backend/custom_errors"
 	"github.com/nozzlium/heymat_backend/helper"
 )
 
@@ -18,7 +19,7 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 		},
 	)
 	if err != nil {
-		return err
+		return custom_errors.GetUnauthorizedError()
 	} else if claims, ok := token.Claims.(*helper.AuthClaims); ok {
 		ctx.Context().SetUserValue("userData", claims)
 		return ctx.Next()

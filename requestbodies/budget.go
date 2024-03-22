@@ -1,8 +1,7 @@
 package requestbodies
 
-import "time"
-
 type Budget struct {
-	Amount uint64    `json:"amount"`
-	Date   time.Time `json:"date"`
+	Title   string `json:"title"`
+	Amount  uint64 `json:"amount"`
+	Private bool   `json:"private"`
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
 	"github.com/nozzlium/heymat_backend/params"
@@ -22,18 +23,20 @@ func (repository *BudgetPlanRepositoryImpl) Create(
 	entity entities.BudgetPlan,
 ) (entities.BudgetPlan, error) {
 	query := `
-    insert into budget(
+    insert into budget_plan(
       user_id,
       amount, 
+      title,
       private,
       created_at,
       updated_at
     ) values (
-      $1, $2, $3, $4, $4
+      $1, $2, $3, $4, $5, $5
     ) returning id;
   `
 	var insertedId uint64
-	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.Private, entity.CreatedAt).
+	currentTime := time.Now()
+	err := DB.QueryRowContext(ctx, query, entity.UserID, entity.Amount, entity.Title, entity.Private, currentTime).
 		Scan(&insertedId)
 	if err != nil {
 		return entities.BudgetPlan{}, err
@@ -50,27 +53,26 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 ) ([]results.BudgetPlanBalanceResult, error) {
 	query := `
     select 
-      budget.id,
-      budget.time_code as date,
-      budget.amount,
-      budget.private,
-      sum(report_entries.amount) as expense,
-      user.id as user_id,
-      user.username as username,
-      user.email as email
-    from budget 
-      left join report_entries on budget.id = report_entries.budget_id
-      join users on user.id = budget.user_id
-    where date_part('year', budget.time_code) = $1 
-      and budget.user_id = $2
-    limit $3
-    offset $4
-    group by budget.id order by date asc;
+      budget_plan.id,
+      budget_plan.created_at as date,
+      budget_plan.title,
+      budget_plan.amount,
+      budget_plan.private,
+      sum(expense.amount) as expense,
+      user_account.id as user_id,
+      user_account.username as username,
+      user_account.email as email
+    from budget_plan 
+      left join expense on budget_plan.id = expense.budget_id
+      join user_account on user_account.id = budget_plan.user_id
+    where budget_plan.user_id = $1 and budget_plan.deleted_at is null 
+    group by (budget_plan.id, user_account.id) order by date desc 
+    limit $2
+    offset $3;
   `
 	rows, err := DB.QueryContext(
 		ctx,
 		query,
-		param.BudgetPlan.CreatedAt,
 		param.BudgetPlan.UserID,
 		param.PageSize,
 		(param.PageNo-1)*param.PageSize,
@@ -87,6 +89,7 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 		err = rows.Scan(
 			&balance.ID,
 			&balance.Date,
+			&balance.Title,
 			&balance.Amount,
 			&balance.Private,
 			&expense,

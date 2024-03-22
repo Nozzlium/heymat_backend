@@ -10,6 +10,7 @@ type BudgetPlanResponse struct {
 
 type BudgetPlanBalanceResponse struct {
 	ID              uint64       `json:"id"`
+	Title           string       `json:"title"`
 	User            UserResponse `json:"user"`
 	CreatedAt       time.Time    `json:"date"`
 	CreatedAtString string       `json:"dateString"`

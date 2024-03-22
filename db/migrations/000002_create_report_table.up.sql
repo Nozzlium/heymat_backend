@@ -1,6 +1,7 @@
 create table if not exists budget_plan(
   id bigserial primary key not null,
   user_id bigint not null,
+  title text not null,
   amount bigint not null,
   private boolean not null, 
   created_at timestamp not null,

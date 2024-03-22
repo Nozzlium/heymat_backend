@@ -28,7 +28,7 @@ func (controller *AuthControllerImpl) Login(ctx *fiber.Ctx) error {
 	}
 
 	resp, err := controller.AuthService.Login(ctx.Context(), params.Auth{
-		User: entities.User{
+		User: entities.UserAccount{
 			Username: body.Identity,
 			Email:    body.Identity,
 			Password: body.Password,

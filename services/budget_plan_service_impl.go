@@ -11,7 +11,7 @@ import (
 	"github.com/nozzlium/heymat_backend/response"
 )
 
-type BudgetServiceImpl struct {
+type BudgetPlanServiceImpl struct {
 	BudgetReporitory repositories.BudgetPlanRepository
 	DB               *sql.DB
 }
@@ -19,22 +19,22 @@ type BudgetServiceImpl struct {
 func NewBudgetService(
 	budgetRepsitory repositories.BudgetPlanRepository,
 	DB *sql.DB,
-) *BudgetServiceImpl {
-	return &BudgetServiceImpl{
+) *BudgetPlanServiceImpl {
+	return &BudgetPlanServiceImpl{
 		BudgetReporitory: budgetRepsitory,
 		DB:               DB,
 	}
 }
 
-func (service *BudgetServiceImpl) Create(
+func (service *BudgetPlanServiceImpl) Create(
 	ctx context.Context,
 	entity entities.BudgetPlan,
 ) (response.BudgetPlanResponse, error) {
-	_, err := service.BudgetReporitory.Create(ctx, service.DB, entity)
-	return helper.BudgetEntityToBudgetResponse(entity), err
+	res, err := service.BudgetReporitory.Create(ctx, service.DB, entity)
+	return helper.BudgetEntityToBudgetResponse(res), err
 }
 
-func (service *BudgetServiceImpl) Get(
+func (service *BudgetPlanServiceImpl) Get(
 	ctx context.Context,
 	param params.BudgetPlan,
 ) (response.BudgetPlanBalanceResponses, error) {

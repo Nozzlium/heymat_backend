@@ -3,13 +3,22 @@ package main
 import (
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/nozzlium/heymat_backend/response"
+	"github.com/nozzlium/heymat_backend/helper"
 )
 
 func TestMake(t *testing.T) {
-	wow := make([]response.MonthlyBalance, 12, 12)
-	fmt.Println(wow)
-	fmt.Println(time.Now().String())
+	fmt.Println(byte(rune('0')))
+}
+
+func BenchmarkBench1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		helper.GroupDecimals(50000000000)
+	}
+}
+
+func BenchmarkBench2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		helper.GroupDecimals2(50000000000)
+	}
 }

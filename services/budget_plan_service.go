@@ -8,10 +8,10 @@ import (
 	"github.com/nozzlium/heymat_backend/response"
 )
 
-type BudgetService interface {
+type BudgetPlanService interface {
 	Create(
 		ctx context.Context,
 		entity entities.BudgetPlan,
-	) (response.BudgetPlanBalanceResponse, error)
-	Get(ctx context.Context, param params.BudgetPlan) (response.BudgetPlanBalanceResponse, error)
+	) (response.BudgetPlanResponse, error)
+	Get(ctx context.Context, param params.BudgetPlan) (response.BudgetPlanBalanceResponses, error)
 }

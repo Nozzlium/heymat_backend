@@ -2,7 +2,7 @@ package entities
 
 import "time"
 
-type User struct {
+type UserAccount struct {
 	ID               uint64
 	Username         string
 	Email            string

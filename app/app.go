@@ -17,17 +17,14 @@ func InitApp() (*fiber.App, error) {
 
 	userRepository := repositories.NewUserRepository()
 	budgetRepository := repositories.NewBudgetRepository()
-	recordEntryRepository := repositories.NewRecordEntryRepository()
 
 	authService := services.NewAuthService(userRepository, db)
 	userService := services.NewUserService(userRepository, db)
 	budgetService := services.NewBudgetService(budgetRepository, db)
-	reportEntryService := services.NewReportService(recordEntryRepository, db)
 
 	authController := controllers.NewAuthController(authService)
 	userController := controllers.NewUserController(userService)
 	budgetController := controllers.NewBudgetController(budgetService)
-	reportController := controllers.NewReportController(reportEntryService)
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: custom_errors.ErrorHandler,
@@ -37,7 +34,6 @@ func InitApp() (*fiber.App, error) {
 	authRouting(app, authController)
 	userRouting(app, userController)
 	budgetRouting(app, budgetController)
-	reportRouting(app, reportController)
 
 	return app, nil
 }
