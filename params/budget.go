@@ -1,9 +1,11 @@
 package params
 
-import "time"
+import (
+	"github.com/nozzlium/heymat_backend/entities"
+)
 
-type Budget struct {
-	UserId uint64
-	Amount uint64
-	Date   time.Time
+type BudgetPlan struct {
+	PageNo     uint32
+	PageSize   uint32
+	BudgetPlan entities.BudgetPlan
 }

@@ -3,6 +3,7 @@ package helper
 import (
 	"github.com/nozzlium/heymat_backend/entities"
 	"github.com/nozzlium/heymat_backend/response"
+	"github.com/nozzlium/heymat_backend/results"
 )
 
 func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
@@ -14,20 +15,34 @@ func UserEntityToResponseMapper(entity entities.User) response.UserResponse {
 	}
 }
 
-func ReportEntryEntityToResponseMapper(entity entities.ReportEntry) response.ReportEntry {
-	return response.ReportEntry{
-		Title:           entity.Title,
-		Notes:           entity.Notes,
-		CreatedAt:       entity.CreatedAt,
-		CreatedAtString: GetIdDateStringFull(entity.CreatedAt),
-		UpdatedAt:       entity.UpdatedAt,
+func BudgetEntityToBudgetResponse(entity entities.BudgetPlan) {
+}
+
+func BudgetResultToBudgetRepsonseMapper(
+	result results.BudgetPlanBalanceResult,
+) response.BudgetPlanBalanceResponse {
+	dateString := GetIdDateStringMonth(result.Date)
+	budget := result.Budget
+	expense := result.Expense
+	balance := int64(budget - expense)
+	return response.BudgetPlanBalanceResponse{
+		Budget:        budget,
+		BudgetString:  IntToCurrency(int64(budget)),
+		Expense:       expense,
+		ExpenseString: IntToCurrency(int64(expense)),
+		Balance:       balance,
+		BalanceString: IntToCurrency(balance),
+		Date:          result.Date,
+		DateString:    dateString,
 	}
 }
 
-func BudgetEntityToBudgetRepsonseMapper(entity entities.Budget) response.BudgetRepsonse {
-	return response.BudgetRepsonse{
-		Amount:     entity.Amount,
-		Date:       entity.CreatedAt,
-		DateString: GetIdDateStringMonth(entity.CreatedAt),
+func BudgetResultsToBudgetResponses(
+	res []results.BudgetPlanBalanceResult,
+) []response.BudgetPlanBalanceResponse {
+	resp := make([]response.BudgetPlanBalanceResponse, 0, len(res))
+	for _, result := range res {
+		resp = append(resp, BudgetResultToBudgetRepsonseMapper(result))
 	}
+	return resp
 }

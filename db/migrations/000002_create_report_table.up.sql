@@ -1,15 +1,15 @@
-create table if not exists budget(
+create table if not exists budget_plans(
   id bigserial primary key not null,
   user_id bigint not null,
   amount bigint not null,
-  time_code timestamp not null,
+  private boolean not null, 
   created_at timestamp not null,
-  updated_at timestamp not null,
-  unique(user_id, time_code),
+  updated_at timestamp not null, 
+  deleted_at timestamp,
   constraint fk_user_id foreign key (user_id) references users(id)
 );
 
-create table if not exists report_entries(
+create table if not exists expenses(
   id bigserial primary key not null,
   user_id bigint not null,
   budget_id bigint not null,
@@ -19,6 +19,6 @@ create table if not exists report_entries(
   created_at timestamp not null,
   updated_at timestamp not null,
   deleted_at timestamp, 
-  constraint fk_budget_id foreign key (budget_id) references budget(id),
+  constraint fk_budget_id foreign key (budget_id) references budget_plans(id),
   constraint fk_user_id foreign key (user_id) references users(id)
 );

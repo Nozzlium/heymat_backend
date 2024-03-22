@@ -2,7 +2,7 @@ package entities
 
 import "time"
 
-type Budget struct {
+type BudgetPlan struct {
 	ID        uint32
 	UserID    uint32
 	Amount    uint64
