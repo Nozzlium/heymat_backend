@@ -7,7 +7,7 @@ create table if not exists budget_plan(
   created_at timestamp not null,
   updated_at timestamp not null, 
   deleted_at timestamp,
-  constraint fk_user_id foreign key (user_id) references users(id)
+  constraint fk_user_id foreign key (user_id) references user_account(id)
 );
 
 create table if not exists expense(
@@ -20,6 +20,6 @@ create table if not exists expense(
   created_at timestamp not null,
   updated_at timestamp not null,
   deleted_at timestamp, 
-  constraint fk_budget_id foreign key (budget_id) references budget_plans(id),
-  constraint fk_user_id foreign key (user_id) references users(id)
+  constraint fk_budget_id foreign key (budget_id) references budget_plan(id),
+  constraint fk_user_id foreign key (user_id) references user_account(id)
 );

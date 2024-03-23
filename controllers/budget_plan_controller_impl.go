@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/nozzlium/heymat_backend/constants"
 	"github.com/nozzlium/heymat_backend/entities"
 	"github.com/nozzlium/heymat_backend/helper"
 	"github.com/nozzlium/heymat_backend/params"
@@ -46,7 +47,7 @@ func (controller *BudgetPlanControllerImpl) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(fiber.Map{
-		"status": "OK",
+		"status": constants.SUCCESS,
 		"code":   fiber.StatusOK,
 		"data":   resp,
 	}, "application/json")
@@ -71,7 +72,7 @@ func (controller *BudgetPlanControllerImpl) Get(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(fiber.Map{
-		"status": "success",
+		"status": constants.SUCCESS,
 		"code":   fiber.StatusOK,
 		"data":   resp,
 	}, "application/json")

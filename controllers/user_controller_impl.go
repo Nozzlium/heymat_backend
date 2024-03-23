@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/nozzlium/heymat_backend/constants"
 	"github.com/nozzlium/heymat_backend/entities"
 	"github.com/nozzlium/heymat_backend/params"
 	"github.com/nozzlium/heymat_backend/requestbodies"
@@ -43,7 +44,7 @@ func (controller *UserControllerImpl) Register(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"code":   fiber.StatusOK,
-		"status": "OK",
+		"status": constants.SUCCESS,
 		"data":   resp,
 	}, "application/json")
 }

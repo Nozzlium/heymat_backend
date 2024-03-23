@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
@@ -111,7 +110,6 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	fmt.Println(res)
 
 	return res, nil
 }
