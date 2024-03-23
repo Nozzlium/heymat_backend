@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
@@ -50,6 +51,7 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 	DB *sql.DB,
 	param params.BudgetPlan,
 ) ([]results.BudgetPlanBalanceResult, error) {
+	fmt.Println(param)
 	query := `
     select 
       budget_plan.id,
@@ -64,15 +66,18 @@ func (repository *BudgetPlanRepositoryImpl) Get(
     from budget_plan 
       left join expense on budget_plan.id = expense.budget_id
       join user_account on user_account.id = budget_plan.user_id
-    where budget_plan.user_id = $1 and budget_plan.deleted_at is null 
+    where budget_plan.user_id = $1 
+      and budget_plan.title ilike '%' || $2 || '%'
+      and budget_plan.deleted_at is null 
     group by (budget_plan.id, user_account.id) order by date desc 
-    limit $2
-    offset $3;
+    limit $3 
+    offset $4;
   `
 	rows, err := DB.QueryContext(
 		ctx,
 		query,
 		param.BudgetPlan.UserID,
+		param.Keyword,
 		param.PageSize,
 		(param.PageNo-1)*param.PageSize,
 	)

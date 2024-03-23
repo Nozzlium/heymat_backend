@@ -62,6 +62,7 @@ func (controller *BudgetPlanControllerImpl) Get(ctx *fiber.Ctx) error {
 	param := params.BudgetPlan{
 		PageNo:   uint32(ctx.QueryInt("pageNo", 1)),
 		PageSize: uint32(ctx.QueryInt("pageSize", 10)),
+		Keyword:  ctx.Query("keyword", ""),
 		BudgetPlan: entities.BudgetPlan{
 			UserID: uint64(claims.ID),
 		},
