@@ -20,6 +20,7 @@ func GenerateJwtToken(user entities.UserAccount) (string, error) {
 	claims := AuthClaims{
 		ID:       user.ID,
 		Username: user.Username,
+		Email:    user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},

@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/nozzlium/heymat_backend/entities"
@@ -51,7 +50,6 @@ func (repository *BudgetPlanRepositoryImpl) Get(
 	DB *sql.DB,
 	param params.BudgetPlan,
 ) ([]results.BudgetPlanBalanceResult, error) {
-	fmt.Println(param)
 	query := `
     select 
       budget_plan.id,

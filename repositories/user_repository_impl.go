@@ -47,6 +47,24 @@ func (repository *UserRepositoryImpl) Create(
 	return entity, nil
 }
 
+func (repository *UserRepositoryImpl) FindById(
+	ctx context.Context,
+	db *sql.DB,
+	id uint64,
+) (entities.UserAccount, error) {
+	query := `
+    select 
+      id,
+      username,
+      email
+    from user_account
+    where id = $1;
+  `
+	user := entities.UserAccount{}
+	err := db.QueryRowContext(ctx, query, id).Scan(&user.ID, &user.Username, &user.Email)
+	return user, err
+}
+
 func (repository *UserRepositoryImpl) FindByCredentials(
 	ctx context.Context,
 	db *sql.DB,

@@ -1,4 +1,4 @@
-package app
+package lib
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func initDB() (*sql.DB, error) {
+func initDB() *sql.DB {
 	url := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		"localhost",
@@ -16,5 +16,10 @@ func initDB() (*sql.DB, error) {
 		"yukberhemat",
 		"heymat",
 	)
-	return sql.Open("postgres", url)
+	db, err := sql.Open("postgres", url)
+	if err != nil {
+		panic(err)
+	}
+
+	return db
 }

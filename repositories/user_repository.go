@@ -13,6 +13,7 @@ type UserRepository interface {
 		db *sql.DB,
 		entity entities.UserAccount,
 	) (entities.UserAccount, error)
+	FindById(ctx context.Context, db *sql.DB, id uint64) (entities.UserAccount, error)
 	FindByCredentials(
 		ctx context.Context,
 		db *sql.DB,
