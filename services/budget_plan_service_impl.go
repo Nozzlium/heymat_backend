@@ -37,10 +37,10 @@ func (service *BudgetPlanServiceImpl) Create(
 func (service *BudgetPlanServiceImpl) Get(
 	ctx context.Context,
 	param params.BudgetPlan,
-) (response.BudgetPlanBalanceResponses, error) {
+) (response.PaginatedBudgetPlanBalance, error) {
 	res, err := service.BudgetReporitory.Get(ctx, service.DB, param)
 
-	return response.BudgetPlanBalanceResponses{
+	return response.PaginatedBudgetPlanBalance{
 		PageNo:      param.PageNo,
 		PageSize:    uint32(len(res)),
 		BudgetPlans: helper.BudgetResultsToBudgetResponses(res),

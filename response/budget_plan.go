@@ -22,7 +22,7 @@ type BudgetPlanBalanceResponse struct {
 	ExpenseString   string       `json:"expenseString"`
 }
 
-type BudgetPlanBalanceResponses struct {
+type PaginatedBudgetPlanBalance struct {
 	PageNo      uint32                      `json:"pageNo"`
 	PageSize    uint32                      `json:"pageSize"`
 	BudgetPlans []BudgetPlanBalanceResponse `json:"budgetPlans"`

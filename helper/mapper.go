@@ -58,3 +58,20 @@ func BudgetResultsToBudgetResponses(
 	}
 	return resp
 }
+
+func ExpenseEntityToExpenseResponse(
+	entity entities.Expense,
+) response.ExpenseResponse {
+	return response.ExpenseResponse{
+		ID:              entity.ID,
+		Title:           entity.Title,
+		Amount:          entity.Amount,
+		AmountString:    IntToCurrency(int64(entity.Amount)),
+		Notes:           entity.Notes,
+		BudgetID:        entity.BudgetID,
+		CreatedAt:       entity.CreatedAt,
+		CreatedAtString: GetIdTimeStringFull(entity.CreatedAt),
+		UpdatedAt:       entity.UpdatedAt,
+		UpdatedAtString: GetIdDateStringFull(entity.UpdatedAt),
+	}
+}

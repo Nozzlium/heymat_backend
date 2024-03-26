@@ -13,5 +13,5 @@ type BudgetPlanService interface {
 		ctx context.Context,
 		entity entities.BudgetPlan,
 	) (response.BudgetPlanResponse, error)
-	Get(ctx context.Context, param params.BudgetPlan) (response.BudgetPlanBalanceResponses, error)
+	Get(ctx context.Context, param params.BudgetPlan) (response.PaginatedBudgetPlanBalance, error)
 }
