@@ -7,6 +7,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var DB = initDB()
+
 func initDB() *sql.DB {
 	url := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
