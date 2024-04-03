@@ -1,8 +1,6 @@
 package budget
 
 import (
-	"errors"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/nozzlium/heymat_backend/lib"
 )
@@ -18,8 +16,10 @@ func createBudgetHandler(
 ) error {
 	claims, ok := ctx.Context().UserValue(lib.USER_DATA).(*lib.AuthClaims)
 	if !ok {
-		return errors.New(
-			"unauthorized",
+		return lib.WriteErrorResponse(
+			fiber.StatusUnauthorized,
+			lib.ErrUnauthorized,
+			ctx,
 		)
 	}
 
@@ -89,7 +89,7 @@ func getBudgetPlanItemsHandler(
 	if !ok {
 		return lib.WriteErrorResponse(
 			fiber.StatusUnauthorized,
-			errors.New("unauthorized"),
+			lib.ErrUnauthorized,
 			ctx,
 		)
 	}
