@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/nozzlium/heymat_backend/lib"
 )
 
 var ErrUserNotFound = errors.New(
@@ -28,7 +27,7 @@ func createBudgetPlan(
 	budgetPlan.UpdatedAt = currentTime
 	saved, err := save(
 		ctx,
-		lib.DB,
+		DB,
 		budgetPlan,
 	)
 	if err != nil {
@@ -42,7 +41,7 @@ func createBudgetPlan(
 
 	return findBudgetPlanItemById(
 		ctx,
-		lib.DB,
+		DB,
 		saved.ID,
 	)
 }
@@ -53,7 +52,7 @@ func getBudgetPlanItemList(
 ) (BudgetPlanListResponse, error) {
 	resp, err := findAllBudgetPlanItems(
 		ctx,
-		lib.DB,
+		DB,
 		param,
 	)
 	if err != nil {
@@ -69,7 +68,7 @@ func getBudgetPlanById(
 ) (BudgetPlanResponse, error) {
 	resp, err := findBudgetPlanItemById(
 		ctx,
-		lib.DB,
+		DB,
 		budgetPlan.ID,
 	)
 	if err != nil {

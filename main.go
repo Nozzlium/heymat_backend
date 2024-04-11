@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/nozzlium/heymat_backend/auth"
@@ -9,6 +11,27 @@ import (
 )
 
 func main() {
+	lib.LoadEnv()
+	config := lib.InitConfig()
+
+	lib.SetSignKey()
+	db, m := InitDB(config)
+
+	args := os.Args[1:]
+	for _, arg := range args {
+		switch arg {
+		case "--migrate-up":
+			Migrate(m, 0)
+		case "truncate":
+			Truncate(m)
+			return
+		}
+	}
+
+	lib.SetDatabaseInstance(db)
+	budget.SetDatabaseInstance(db)
+	auth.SetDatabaseInstance(db)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
 			return lib.WriteErrorResponse(

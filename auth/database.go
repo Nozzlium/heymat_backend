@@ -1,4 +1,4 @@
-package lib
+package auth
 
 import (
 	"database/sql"
@@ -8,10 +8,10 @@ import (
 var DB *sql.DB
 
 func SetDatabaseInstance(db *sql.DB) {
-	if DB == nil {
+	if db == nil {
 		panic(
 			errors.New(
-				"cannot set DB instance",
+				"cannot set database instance",
 			),
 		)
 	}

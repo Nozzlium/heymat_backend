@@ -57,7 +57,7 @@ func registerUser(
 
 	result, err := save(
 		ctx,
-		lib.DB,
+		DB,
 		user,
 	)
 	if err != nil {
@@ -73,9 +73,9 @@ func login(
 	ctx context.Context,
 	userAccount UserAccount,
 ) (LoginResponse, error) {
-	user, err := getUserByCredential(
+	user, err := getUserByUsernameOrEmail(
 		ctx,
-		lib.DB,
+		DB,
 		userAccount,
 	)
 	if err != nil {
@@ -96,7 +96,13 @@ func login(
 		return LoginResponse{}, err
 	}
 
-	token, err := generateJwtToken(user)
+	token, err := lib.GenerateJwtToken(
+		lib.InitAuthClaims(
+			user.ID,
+			user.Username,
+			user.Email,
+		),
+	)
 	if err != nil {
 		log.Println(err)
 		return LoginResponse{}, err
