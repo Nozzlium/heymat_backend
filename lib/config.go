@@ -58,3 +58,13 @@ func InitConfig() *Config {
 	config.ReadFromEnv()
 	return &config
 }
+
+func GetTestConfig() Config {
+	return Config{
+		DBHost:     "localhost",
+		DBPort:     "5432",
+		DBUsername: "heymat",
+		DBPassword: "yukberhemat",
+		DBName:     "heymattest",
+	}
+}

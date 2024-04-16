@@ -6,7 +6,7 @@ import (
 )
 
 func GetRouting(app *fiber.App) {
-	budget := app.Group("/budget")
+	budget := app.Group("/api/budget")
 	budget.Use(lib.AuthMiddleware)
 	budget.Post("", createBudgetHandler)
 	budget.Get(

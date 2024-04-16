@@ -11,6 +11,18 @@ type BudgetPlanRequestBody struct {
 	Private bool   `json:"private"`
 }
 
+type BudgetPlanResponseBody struct {
+	Code   uint8              `json:"code"`
+	Status string             `json:"status"`
+	Data   BudgetPlanResponse `json:"data"`
+}
+
+type BudgetPlanItemListResponseBody struct {
+	Code   uint8                  `json:"code"`
+	Status string                 `json:"status"`
+	Data   BudgetPlanListResponse `json:"data"`
+}
+
 func createBudgetHandler(
 	ctx *fiber.Ctx,
 ) error {
@@ -38,11 +50,14 @@ func createBudgetHandler(
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
-		"status": "OK",
-		"code":   fiber.StatusOK,
-		"data":   resp,
-	}, "application/json")
+	return ctx.JSON(
+		BudgetPlanResponseBody{
+			Code:   fiber.StatusOK,
+			Status: "OK",
+			Data:   resp,
+		},
+		"application/json",
+	)
 }
 
 func getBudgetPlanByIdHandler(

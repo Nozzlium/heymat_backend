@@ -16,6 +16,18 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
+type RegisterResponseBody struct {
+	Code   uint8        `json:"code"`
+	Status string       `json:"status"`
+	Data   UserResponse `json:"data"`
+}
+
+type LoginResponseBody struct {
+	Code   uint8         `json:"code"`
+	Status string        `json:"status"`
+	Data   LoginResponse `json:"data"`
+}
+
 func registerHandler(
 	ctx *fiber.Ctx,
 ) error {
@@ -44,11 +56,14 @@ func registerHandler(
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
-		"code":   fiber.StatusOK,
-		"status": "OK",
-		"data":   resp,
-	}, "application/json")
+	return ctx.JSON(
+		RegisterResponseBody{
+			Code:   fiber.StatusOK,
+			Status: "OK",
+			Data:   resp,
+		},
+		"application/json",
+	)
 }
 
 func loginHandler(
@@ -79,9 +94,9 @@ func loginHandler(
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
-		"code":   fiber.StatusOK,
-		"status": "OK",
-		"data":   resp,
+	return ctx.JSON(LoginResponseBody{
+		Code:   fiber.StatusOK,
+		Status: "OK",
+		Data:   resp,
 	}, "application/json")
 }

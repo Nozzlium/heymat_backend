@@ -22,7 +22,11 @@ func main() {
 		switch arg {
 		case "--migrate-up":
 			Migrate(m, 0)
-		case "truncate":
+			break
+		case "--version":
+			GetDatabaseVersion(m)
+			return
+		case "--truncate":
 			Truncate(m)
 			return
 		}

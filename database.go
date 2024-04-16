@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"embed"
+	"fmt"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -63,6 +65,9 @@ func Migrate(
 	if steps == 0 {
 		err := m.Up()
 		if err != nil {
+			if err == migrate.ErrNoChange {
+				return
+			}
 			panic(err)
 		}
 		return
@@ -77,6 +82,38 @@ func Migrate(
 func Truncate(m *migrate.Migrate) {
 	err := m.Down()
 	if err != nil {
+		if err == migrate.ErrNoChange {
+			return
+		}
 		panic(err)
 	}
+}
+
+func GetDatabaseVersion(
+	m *migrate.Migrate,
+) {
+	version, dirty, err := m.Version()
+	if err != nil {
+		if err == migrate.ErrNilVersion {
+			fmt.Println(
+				"no database verion, migrate with --migrate-up command",
+			)
+			return
+		}
+		log.Println(err)
+		panic(err)
+	}
+
+	if dirty {
+		fmt.Printf(
+			"dirty state at version %d\n",
+			version,
+		)
+		return
+	}
+
+	fmt.Printf(
+		"current migration version: %d\n",
+		version,
+	)
 }
