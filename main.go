@@ -50,7 +50,7 @@ func main() {
 	auth.GetRouting(app)
 	budget.GetRouting(app)
 
-	err := app.Listen(":4343")
+	err := app.Listen(":4040")
 	if err != nil {
 		panic(err)
 	}
