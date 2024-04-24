@@ -55,8 +55,6 @@ example:
 ### Response
 
     {
-        "code": int,
-        "status": string,
         "data": {
     	    "id": number,
     	    "username": string,
@@ -90,8 +88,6 @@ example:
 ### Response
 
     {
-        "code": int,
-        "status": string,
         "data": {
     	    "token": string
     	}
@@ -125,8 +121,6 @@ example:
 ### Response
 
     {
-        "code": number,
-        "status": string,
         "data": {
     	    "id": number,
     	    "title": string,
@@ -167,8 +161,6 @@ example:
 ### Response
 
     {
-        "code": number,
-        "status": string,
         "data": {
     	    "id": number,
     	    "title": string,
@@ -209,8 +201,6 @@ example:
 ### Response
 
     {
-        "code": number,
-        "status": string,
         "data": {
     	    "pageNo": number,
     	    "pageSize": number,
@@ -242,13 +232,3 @@ example:
 
 **More features under construction!**
 _check back soon_
-
-# Error
-
-## Generic error response
-
-    {
-        "code": number,
-        "status": "error",
-        "error": string
-    }
