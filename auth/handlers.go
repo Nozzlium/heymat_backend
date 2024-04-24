@@ -47,22 +47,19 @@ func registerHandler(
 	)
 	if err != nil {
 		if err == ErrUserExists {
-			return lib.WriteErrorResponse(
-				fiber.StatusConflict,
-				err,
+			return lib.WriteResponse(
 				ctx,
+				fiber.StatusConflict,
+				err.Error(),
 			)
 		}
 		return err
 	}
 
-	return ctx.JSON(
-		RegisterResponseBody{
-			Code:   fiber.StatusOK,
-			Status: "OK",
-			Data:   resp,
-		},
-		"application/json",
+	return lib.WriteResponse(
+		ctx,
+		fiber.StatusOK,
+		resp,
 	)
 }
 
@@ -85,18 +82,18 @@ func loginHandler(
 	)
 	if err != nil {
 		if err == ErrInvalidCredential {
-			return lib.WriteErrorResponse(
-				fiber.StatusUnauthorized,
-				err,
+			return lib.WriteResponse(
 				ctx,
+				fiber.StatusUnauthorized,
+				err.Error(),
 			)
 		}
 		return err
 	}
 
-	return ctx.JSON(LoginResponseBody{
-		Code:   fiber.StatusOK,
-		Status: "OK",
-		Data:   resp,
-	}, "application/json")
+	return lib.WriteResponse(
+		ctx,
+		fiber.StatusOK,
+		resp,
+	)
 }

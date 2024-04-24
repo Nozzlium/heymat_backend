@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"embed"
+	"errors"
 	"fmt"
 	"log"
 
@@ -11,19 +12,21 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/lib/pq"
-	"github.com/nozzlium/heymat_backend/lib"
 )
 
 //go:embed migrations/*.sql
 var schema embed.FS
 
 func InitDB(
-	config *lib.Config,
+	config *Config,
 ) (*sql.DB, *migrate.Migrate) {
 	url := config.GetPGConnString()
 	db, err := sql.Open("postgres", url)
 	if err != nil {
-		panic(err)
+		log.Println(
+			"error pening connection",
+			err,
+		)
 	}
 
 	db.SetMaxOpenConns(10)
@@ -34,7 +37,10 @@ func InitDB(
 		&postgres.Config{},
 	)
 	if err != nil {
-		panic(err)
+		log.Println(
+			"error getting driver with instance",
+			err,
+		)
 	}
 
 	sourceDriver, err := iofs.New(
@@ -42,7 +48,10 @@ func InitDB(
 		"migrations",
 	)
 	if err != nil {
-		panic(err)
+		log.Println(
+			"error getting migration files from embed",
+			err,
+		)
 	}
 
 	m, err := migrate.NewWithInstance(
@@ -52,7 +61,10 @@ func InitDB(
 		driver,
 	)
 	if err != nil {
-		panic(err)
+		log.Println(
+			"error initializing migration",
+			err,
+		)
 	}
 
 	return db, m
@@ -65,17 +77,29 @@ func Migrate(
 	if steps == 0 {
 		err := m.Up()
 		if err != nil {
-			if err == migrate.ErrNoChange {
+			if errors.Is(
+				err,
+				migrate.ErrNoChange,
+			) {
+				log.Println(
+					"warning: no change",
+				)
 				return
 			}
-			panic(err)
+			log.Println(
+				"error migrating up",
+				err,
+			)
 		}
 		return
 	}
 
 	err := m.Steps(int(steps))
 	if err != nil {
-		panic(err)
+		log.Printf(
+			"error migrating %d up versions\n",
+			steps,
+		)
 	}
 }
 
@@ -83,9 +107,15 @@ func Truncate(m *migrate.Migrate) {
 	err := m.Down()
 	if err != nil {
 		if err == migrate.ErrNoChange {
+			log.Println(
+				"warning: no change",
+			)
 			return
 		}
-		panic(err)
+		log.Println(
+			"error truncating database",
+			err,
+		)
 	}
 }
 
@@ -101,7 +131,6 @@ func GetDatabaseVersion(
 			return
 		}
 		log.Println(err)
-		panic(err)
 	}
 
 	if dirty {

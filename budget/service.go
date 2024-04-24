@@ -2,11 +2,14 @@ package budget
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
 	"github.com/lib/pq"
 )
+
+var DB *sql.DB
 
 var ErrUserNotFound = errors.New(
 	"user tidak ada",

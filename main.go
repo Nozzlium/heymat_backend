@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,8 +12,8 @@ import (
 )
 
 func main() {
-	lib.LoadEnv()
-	config := lib.InitConfig()
+	LoadEnv()
+	config := InitConfig()
 
 	lib.SetSignKey()
 	db, m := InitDB(config)
@@ -32,26 +33,49 @@ func main() {
 		}
 	}
 
-	lib.SetDatabaseInstance(db)
-	budget.SetDatabaseInstance(db)
-	auth.SetDatabaseInstance(db)
-
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			return lib.WriteErrorResponse(
-				fiber.StatusInternalServerError,
-				err,
+			return lib.WriteResponse(
 				ctx,
+				fiber.StatusInternalServerError,
+				err.Error(),
 			)
 		},
 	})
 	app.Use(cors.New())
 
-	auth.GetRouting(app)
-	budget.GetRouting(app)
-
-	err := app.Listen(":4040")
+	authRoute, err := auth.Init(
+		auth.Config{
+			DB: db,
+		},
+	)
 	if err != nil {
-		panic(err)
+		log.Fatal(
+			"Initializing auth route",
+			err.Error(),
+		)
+	}
+	app.Mount("", authRoute)
+
+	budgetRoute, err := budget.Init(
+		budget.Config{
+			DB:             db,
+			AuthMiddleware: auth.AuthMiddleware,
+		},
+	)
+	if err != nil {
+		log.Fatal(
+			"Initializing budget route",
+			err.Error(),
+		)
+	}
+	app.Mount(
+		"/api/budget",
+		budgetRoute,
+	)
+
+	err = app.Listen(":4040")
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }

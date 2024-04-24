@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var DB *sql.DB
+
 var (
 	ErrUserExists = errors.New(
 		"username atau email sudah terdaftar",
@@ -73,7 +75,7 @@ func login(
 	ctx context.Context,
 	userAccount UserAccount,
 ) (LoginResponse, error) {
-	user, err := getUserByUsernameOrEmail(
+	user, err := findUserByUsernameOrEmail(
 		ctx,
 		DB,
 		userAccount,

@@ -64,7 +64,7 @@ func findById(
 	return user, nil
 }
 
-func getUserByUsernameOrEmail(
+func findUserByUsernameOrEmail(
 	ctx context.Context,
 	DB *sql.DB,
 	entity UserAccount,

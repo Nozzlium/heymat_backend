@@ -8,6 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+const (
+	USER_DATA = "userData"
+)
+
 type AuthClaims struct {
 	UserID   uint64 `json:"id"`
 	Username string `json:"username"`
@@ -15,7 +19,7 @@ type AuthClaims struct {
 	jwt.RegisteredClaims
 }
 
-var signKey string
+var SignKey string
 
 func GenerateJwtToken(
 	claims AuthClaims,
@@ -25,7 +29,21 @@ func GenerateJwtToken(
 		claims,
 	)
 	return token.SignedString(
-		[]byte(signKey),
+		[]byte(SignKey),
+	)
+}
+
+func ParseJwtToken(
+	jwtToken string,
+) (*jwt.Token, error) {
+	return jwt.ParseWithClaims(
+		jwtToken,
+		&AuthClaims{},
+		func(t *jwt.Token) (interface{}, error) {
+			return []byte(
+				SignKey,
+			), nil
+		},
 	)
 }
 
@@ -56,6 +74,6 @@ func SetSignKey() error {
 			"sign key not found",
 		)
 	}
-	signKey = signKeyEnv
+	SignKey = signKeyEnv
 	return nil
 }

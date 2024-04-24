@@ -13,7 +13,6 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/nozzlium/heymat_backend/auth"
 	"github.com/nozzlium/heymat_backend/budget"
-	"github.com/nozzlium/heymat_backend/lib"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,15 +43,28 @@ var budgetPlanItems = []budget.BudgetPlanRequestBody{
 
 func initApp() {
 	app = fiber.New(fiber.Config{})
-	auth.GetRouting(app)
-	auth.SetDatabaseInstance(DB)
-	budget.GetRouting(app)
-	budget.SetDatabaseInstance(DB)
-	lib.SetDatabaseInstance(DB)
+	authRoute, _ := auth.Init(
+		auth.Config{
+			DB: DB,
+		},
+	)
+
+	budgetRoute, _ := budget.Init(
+		budget.Config{
+			DB:             DB,
+			AuthMiddleware: auth.AuthMiddleware,
+		},
+	)
+
+	app.Mount("", authRoute)
+	app.Mount(
+		"/api/budget",
+		budgetRoute,
+	)
 }
 
 func initTest() {
-	config := lib.GetTestConfig()
+	config := GetTestConfig()
 	DB, M = InitDB(&config)
 	initApp()
 }
@@ -184,14 +196,14 @@ func TestCreateBudgetPlan(
 			newBudgetRequest,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		respBytes, err := io.ReadAll(
 			resp.Body,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		var budgetPlanResponseBody budget.BudgetPlanResponseBody
@@ -200,7 +212,7 @@ func TestCreateBudgetPlan(
 			&budgetPlanResponseBody,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		assert.Equal(
@@ -235,14 +247,14 @@ func TestGetBudgetPlanById(
 			getPlanByIdReq,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		respBytes, err := io.ReadAll(
 			resp.Body,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		var budgetPlanResponseBody budget.BudgetPlanResponseBody
@@ -251,7 +263,7 @@ func TestGetBudgetPlanById(
 			&budgetPlanResponseBody,
 		)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
 		}
 
 		assert.Equal(
@@ -278,14 +290,14 @@ func TestGetBudgetItemList(
 		budgetItemListRequest,
 	)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	respBytes, err := io.ReadAll(
 		resp.Body,
 	)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	var budgetPlanItemListResponseBody budget.BudgetPlanItemListResponseBody
@@ -294,7 +306,7 @@ func TestGetBudgetItemList(
 		&budgetPlanItemListResponseBody,
 	)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	assert.Equal(

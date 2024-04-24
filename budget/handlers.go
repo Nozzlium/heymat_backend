@@ -28,10 +28,10 @@ func createBudgetHandler(
 ) error {
 	claims, ok := ctx.Context().UserValue(lib.USER_DATA).(*lib.AuthClaims)
 	if !ok {
-		return lib.WriteErrorResponse(
-			fiber.StatusUnauthorized,
-			lib.ErrUnauthorized,
+		return lib.WriteResponse(
 			ctx,
+			fiber.StatusUnauthorized,
+			"token tidak valid",
 		)
 	}
 
@@ -50,13 +50,10 @@ func createBudgetHandler(
 		return err
 	}
 
-	return ctx.JSON(
-		BudgetPlanResponseBody{
-			Code:   fiber.StatusOK,
-			Status: "OK",
-			Data:   resp,
-		},
-		"application/json",
+	return lib.WriteResponse(
+		ctx,
+		fiber.StatusOK,
+		resp,
 	)
 }
 
@@ -90,11 +87,11 @@ func getBudgetPlanByIdHandler(
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
-		"status": "OK",
-		"code":   fiber.StatusOK,
-		"data":   resp,
-	}, "application/json")
+	return lib.WriteResponse(
+		ctx,
+		fiber.StatusOK,
+		resp,
+	)
 }
 
 func getBudgetPlanItemsHandler(
@@ -102,10 +99,10 @@ func getBudgetPlanItemsHandler(
 ) error {
 	claims, ok := ctx.Context().UserValue(lib.USER_DATA).(*lib.AuthClaims)
 	if !ok {
-		return lib.WriteErrorResponse(
-			fiber.StatusUnauthorized,
-			lib.ErrUnauthorized,
+		return lib.WriteResponse(
 			ctx,
+			fiber.StatusUnauthorized,
+			"unauthorized",
 		)
 	}
 
@@ -135,9 +132,9 @@ func getBudgetPlanItemsHandler(
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
-		"status": "OK",
-		"code":   fiber.StatusOK,
-		"data":   resp,
-	}, "application/json")
+	return lib.WriteResponse(
+		ctx,
+		fiber.StatusOK,
+		resp,
+	)
 }
